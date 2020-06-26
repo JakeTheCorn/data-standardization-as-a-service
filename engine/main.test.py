@@ -6,12 +6,12 @@ from pluck import pluck
 #   Parse flat to nested
 #   Design for less mocking 
 #   Check for Pluck errors
-#   Recurse to get nested from flat
 
-def engine(doc, data):
+def engine(doc, data, col={}):
     _in = doc.get('in')
     _out = doc.get('out')
     collector = {}
+    collector.update(col)
     for out_key in _out:
         out_val = _out.get(out_key)
         if isinstance(out_val, dict):
@@ -19,7 +19,17 @@ def engine(doc, data):
                 'in': _in,
                 'out': out_val
             }
-            return engine(d, data)
+            collector[out_key] = {}
+            for sub_key in out_val:
+                if isinstance(out_val[sub_key], dict):
+                    collector[sub_key] = engine(d, data, collector)
+                else:
+                    path = out_key + '.' + sub_key
+                    _in_key = out_val[sub_key]
+                    _data_path = _in.get(_in_key)
+                    val, _err = pluck(data, _data_path)
+                    collector[out_key][sub_key] = val
+
         if isinstance(out_val, str):
             data_path = _in.get(out_val)
             if '.' in data_path:
@@ -29,6 +39,8 @@ def engine(doc, data):
             collector[out_key] = data.get(data_path)
     
     return collector
+
+
 
 
 class EngineTest(unittest.TestCase):
@@ -62,7 +74,7 @@ class EngineTest(unittest.TestCase):
         }
 
         actual = engine(doc=doc, data=data)
-        expected = {'Name' : 'Frank'}
+        expected = {'Name': 'Frank'}
         self.assertEqual(actual, expected)
 
     def test_flat_to_nested(self):
@@ -72,13 +84,13 @@ class EngineTest(unittest.TestCase):
         }
         doc = {
             'in': {
-                'user_first' : 'user_first',
-                'user_last': 'user_last'
+                'in_first' : 'user_first',
+                'in_last': 'user_last'
             },
             'out' : {
                 'user' : {
-                    'first': 'user_first',
-                    'last': 'user_last'
+                    'first': 'in_first',
+                    'last': 'in_last'
                 }
             }
         }
