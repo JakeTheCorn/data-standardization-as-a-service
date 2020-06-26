@@ -1,9 +1,11 @@
 import unittest
-
+from pluck import pluck
 
 # Todo:
-#   Look in the doc for path and output the data in the path
-#   Design for less mocking
+#   Errors on invalid doc (no in key, no out key, non-dict types)
+#   Parse Nested Structure
+#   Design for less mocking 
+#   Check for Pluck errors
 
 def engine(doc, data):
     _in = doc.get('in')
@@ -12,6 +14,10 @@ def engine(doc, data):
     for out_key in _out:
         in_key = _out.get(out_key)
         data_path = _in.get(in_key)
+        if '.' in data_path:
+            val, _err = pluck(data, data_path)
+            collector[out_key] = val
+            continue
         collector[out_key] = data.get(data_path)
     
     return collector
@@ -31,6 +37,25 @@ class EngineTest(unittest.TestCase):
             }
             actual = engine(doc=doc, data=data)
             self.assertEqual(actual, expected)
+
+    def test_nested_to_flat(self):
+        data = {
+            'user' : {
+                'name' : 'Frank'
+            }
+        }
+        doc = {
+            'in': {
+                'name' : 'user.name'
+            },
+            'out' : {
+                'Name' : 'name'
+            }
+        }
+
+        actual = engine(doc=doc, data=data)
+        expected = {'Name' : 'Frank'}
+        self.assertEqual(actual, expected)
 
 
 if __name__ == '__main__':
