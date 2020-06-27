@@ -1,0 +1,12 @@
+{
+    "[python]": {
+        "editor.insertSpaces": true,
+        "editor.tabSize": 2
+    },
+    "files.insertFinalNewline": true,
+    "files.trimTrailingWhitespace": true,
+    "editor.tabSize": 2,
+    "files.exclude": {
+        "**/*.pyc": true
+    }
+}
