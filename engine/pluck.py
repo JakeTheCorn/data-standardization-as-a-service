@@ -1,5 +1,9 @@
 FALLBACK_FLAG = '_______FALLBACK_FLAG'
 
+# todo:
+#   Refactor to use simple strings without Exception
+#   Refactor to use "in" operator instead of FALLBACK_FLAG
+
 def pluck(obj, path, fallback = None):
   """ pluck({'name': {'first': 'bo'}}, 'name.first') -> 'bo'"""
   d = dict(obj)
