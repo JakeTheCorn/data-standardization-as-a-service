@@ -114,6 +114,12 @@ class EngineTest(unittest.TestCase):
     expected = {}
     self.assertEqual(expected, actual)
 
+  def test_path_error_out_doc(self):
+    data = {'name': 'bob'}
+    doc = {'in': {'in_name': 'name'}, 'out': {'Name': 'not_in_name'}}
+    actual, err = engine(doc, data)
+    self.assertEqual('Path not found', err)
+
 
 if __name__ == '__main__':
     unittest.main()

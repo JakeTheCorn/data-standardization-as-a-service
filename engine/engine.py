@@ -30,6 +30,7 @@ def engine(doc, data):
         val, _err = pluck(data, _data_path)
         collector[out_key][sub_key] = val
     if isinstance(out_val, str):
+      # if dict_has_path
       data_path = _in.get(out_val)
       if '.' not in data_path:
         collector[out_key] = data.get(data_path)
