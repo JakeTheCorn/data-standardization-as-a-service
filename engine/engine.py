@@ -1,6 +1,11 @@
 from pluck import pluck
 from dict_has_path import dict_has_path
 
+# todo:
+#   tons of repetition... is it okay?
+#   some code paths might not be investigated
+#   more tests
+#   this is ugly af
 
 def engine(doc, data):
   if 'out' not in doc or 'in' not in doc:
@@ -28,7 +33,9 @@ def engine(doc, data):
         path = out_key + '.' + sub_key
         _in_key = out_val[sub_key]
         _data_path = _in.get(_in_key)
-        val, _err = pluck(data, _data_path)
+        val, err = pluck(data, _data_path)
+        if err:
+          return None, 'Path not found in data'
         collector[out_key][sub_key] = val
     if isinstance(out_val, str):
       has_path, err = dict_has_path(_in, out_val)
@@ -36,10 +43,16 @@ def engine(doc, data):
         return None, 'Path not found'
       data_path = _in.get(out_val)
       if '.' not in data_path:
+        has_path, _err = dict_has_path(data, data_path)
+        if not has_path:
+          return None, 'Path not found in data'
         collector[out_key] = data.get(data_path)
         continue
 
-      val, _err = pluck(data, data_path)
+      val, err = pluck(data, data_path)
+
+      if err:
+        return None, 'Path not found in data'
       collector[out_key] = val
 
   return collector
