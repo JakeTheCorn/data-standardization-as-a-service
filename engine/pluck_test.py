@@ -31,5 +31,15 @@ class TestPluck(unittest.TestCase):
     result, _err = pluck(arg, 'a.a2', fallback)
     self.assertEqual(result, fallback)
 
+  def test_unpluckable(self):
+    _, err = pluck(1, 'a')
+    self.assertRegexpMatches(err, r'unpluckable')
+    _, err = pluck({'a': 1}, 'a.b')
+    self.assertRegexpMatches(err, r'unpluckable')
+
+  def test_path_not_string(self):
+    _, err = pluck({}, None)
+    self.assertRegexpMatches(err, r'path must be of type string')
+
 if __name__ == "__main__":
   unittest.main()
