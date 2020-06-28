@@ -3,7 +3,6 @@ def dict_has_path(d, path):
     return None, 'dict_has_path expected type dict for d parameter. called with %s' % d.__class__.__name__
   if not isinstance(path, str):
     return None, 'dict_has_path expected type str for path parameter.  called with %s' % path.__class__.__name__
-# attempt simple match
   if path in d:
     return True, None
   if '.' not in path:

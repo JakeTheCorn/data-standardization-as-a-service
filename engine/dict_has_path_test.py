@@ -28,6 +28,10 @@ class DictHasPathTestsTest(unittest.TestCase):
     self.assertEqual(has_path, True)
     self.assertEqual(err, None)
 
+  def test_nested_false(self):
+    has_path, err = dict_has_path({'name': {'first': 'bo'}}, 'name.last')
+    self.assertEqual(has_path, False)
+    self.assertEqual(err, None)
 
 if __name__ == '__main__':
     unittest.main()
