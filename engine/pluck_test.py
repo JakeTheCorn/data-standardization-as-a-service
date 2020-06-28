@@ -12,7 +12,10 @@ class TestPluck(unittest.TestCase):
   def test_not_found(self):
     arg = {'a': 1}
     _result, err = pluck(arg, 'b')
-    self.assertRegexpMatches(str(err) ,r'does not exist')
+    self.assertRegexpMatches(err ,r'does not exist')
+    arg = {'a': {'a1': {'a2': 2}}}
+    _result, err = pluck(arg, 'a.a1.a')
+    self.assertRegexpMatches(err ,r'does not exist')
 
   def test_nested(self):
     arg = {'a': {'a1': 1}}
@@ -27,3 +30,6 @@ class TestPluck(unittest.TestCase):
     fallback = 'FALLBACK'
     result, _err = pluck(arg, 'a.a2', fallback)
     self.assertEqual(result, fallback)
+
+if __name__ == "__main__":
+  unittest.main()
