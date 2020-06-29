@@ -13,6 +13,13 @@ What if this generated an intermediary before having data passed in?
   maybe do this after integrating current functionality with other pieces
 """
 
+class Engine:
+  def __init__(self, doc):
+    self.__doc = doc
+
+  def run(self, data):
+    return engine(self.__doc, data)
+
 def engine(doc, data):
   if 'out' not in doc or 'in' not in doc:
       return None, 'Doc should contain "in" and "out" keys'
@@ -30,10 +37,12 @@ def engine(doc, data):
       for sub_key in out_val:
         if isinstance(out_val[sub_key], dict):
           collector[out_key] = {}
-          collector[out_key][sub_key] = engine({
+          val, err = engine({
               'in': in_doc,
               'out': out_val[sub_key]
           }, data)
+          # todo: check for err
+          collector[out_key][sub_key] = val
           continue
 
         path = out_key + '.' + sub_key
@@ -55,4 +64,4 @@ def engine(doc, data):
         return None, 'Path not found in data: %s' % data_path
       collector[out_key] = val
 
-  return collector
+  return collector, None

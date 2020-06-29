@@ -1,5 +1,5 @@
 import unittest
-from engine import engine
+from engine import Engine
 
 # Todo:
 #   Reformat to use 2 spaces
@@ -22,7 +22,8 @@ class EngineTest(unittest.TestCase):
           'in': in_doc,
           'out': out_doc
       }
-      actual = engine(doc=doc, data=data)
+      e = Engine(doc)
+      actual, err = e.run(data)
       self.assertEqual(actual, expected)
 
   def test_nested_to_flat(self):
@@ -40,7 +41,8 @@ class EngineTest(unittest.TestCase):
       }
     }
 
-    actual = engine(doc=doc, data=data)
+    e = Engine(doc)
+    actual, err = e.run(data)
     expected = {'Name': 'Frank'}
     self.assertEqual(actual, expected)
 
@@ -62,7 +64,8 @@ class EngineTest(unittest.TestCase):
       }
     }
 
-    actual = engine(doc=doc, data=data)
+    e = Engine(doc)
+    actual, err = e.run(data)
     expected = {'user': {'first': 'bob', 'last': 'bobson'}}
     self.assertEqual(expected, actual)
 
@@ -86,26 +89,31 @@ class EngineTest(unittest.TestCase):
           }
       }
 
-      actual = engine(doc=doc, data=data)
+      e = Engine(doc)
+      actual, err = e.run(data)
       expected = {'user': {'name': {'first': 'bob', 'last': 'bobson'}}}
       self.assertEqual(actual, expected)
 
   def test_it_errors_when_no_in_or_out_keys_in_doc(self):
       doc = {'in': None}
-      _res, err = engine(doc, {})
+      e = Engine(doc)
+      actual, err = e.run({})
       self.assertEqual('Doc should contain "in" and "out" keys', err)
       doc = {'out': None}
-      _res, err = engine(doc, {})
+      e = Engine(doc)
+      actual, err = e.run({})
       self.assertEqual('Doc should contain "in" and "out" keys', err)
 
   def test_in_datatype_err(self):
       doc = {'in': None, 'out': {}}
-      _res, err = engine(doc, {})
+      e = Engine(doc)
+      actual, err = e.run({})
       self.assertEqual('Doc "in" should be of type dict', err)
 
   def test_out_datatype_err(self):
     doc = {'in': {}, 'out': None}
-    _res, err = engine(doc, {})
+    e = Engine(doc)
+    actual, err = e.run({})
     self.assertEqual('Doc "out" should be of type dict', err)
 
   # todo
@@ -114,7 +122,8 @@ class EngineTest(unittest.TestCase):
       'people': [{'name': 'bob'}]
     }
     doc = {'in': {}, 'out': {}}
-    actual, err = engine(doc, data)
+    e = Engine(doc)
+    actual, err = e.run(data)
     expected = {}
     self.assertEqual(expected, actual)
 
@@ -127,7 +136,8 @@ class EngineTest(unittest.TestCase):
     ]
     for out_doc, expected in tables:
       doc = {'in': in_doc, 'out': out_doc}
-      actual, err = engine(doc, data)
+      e = Engine(doc)
+      actual, err = e.run(data)
       self.assertEqual(actual, None)
       self.assertEqual(expected, err)
 
@@ -137,7 +147,8 @@ class EngineTest(unittest.TestCase):
     in_doc = {'in_name': {'first': 'bo'}}
     out_doc ={'Name': 'in_name.last'}
     doc = {'in': in_doc, 'out': out_doc}
-    actual, err = engine(doc, data)
+    e = Engine(doc)
+    actual, err = e.run(data)
     self.assertEqual(actual, None)
     self.assertEqual(err, 'Path not found: in:in_name.last')
 
@@ -157,7 +168,8 @@ class EngineTest(unittest.TestCase):
     }
     out_doc ={'Home': '...in_location, ...in_homedetails'}
     doc = {'in': in_doc, 'out': out_doc}
-    actual, err = engine(doc, data)
+    e = Engine(doc)
+    actual, err = e.run(data)
     expected = {
       'Home': {
         'address': '11 street ave.',
@@ -170,9 +182,10 @@ class EngineTest(unittest.TestCase):
   def test_path_error_in_doc(self):
     data = {'name': 'bob'}
     doc = {'in': {'in_name': '_'}, 'out': {'Name': 'in_name'}}
-    actual, err = engine(doc, data)
+    e = Engine(doc)
+    actual, err = e.run(data)
     self.assertEqual('Path not found in data: _', err)
 
 
 if __name__ == '__main__':
-    unittest.main()
+  unittest.main()
