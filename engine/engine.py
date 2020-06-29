@@ -38,9 +38,9 @@ def engine(doc, data):
           return None, 'Path not found in data'
         collector[out_key][sub_key] = val
     if isinstance(out_val, str):
-      has_path, err = dict_has_path(_in, out_val)
-      if not has_path:
-        return None, 'Path not found'
+      in_doc_has_path, err = dict_has_path(_in, out_val)
+      if not in_doc_has_path:
+        return None, 'Path not found: in.%s' % out_val
       data_path = _in.get(out_val)
       if '.' not in data_path:
         has_path, _err = dict_has_path(data, data_path)
