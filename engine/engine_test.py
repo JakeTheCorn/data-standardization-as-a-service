@@ -110,7 +110,9 @@ class EngineTest(unittest.TestCase):
 
   # todo
   def _test_list_data(self):
-    data = []
+    data = {
+      'people': [{'name': 'bob'}]
+    }
     doc = {'in': {}, 'out': {}}
     actual, err = engine(doc, data)
     expected = {}
@@ -169,7 +171,7 @@ class EngineTest(unittest.TestCase):
     data = {'name': 'bob'}
     doc = {'in': {'in_name': '_'}, 'out': {'Name': 'in_name'}}
     actual, err = engine(doc, data)
-    self.assertEqual('Path not found in data', err)
+    self.assertEqual('Path not found in data: _', err)
 
 
 if __name__ == '__main__':
