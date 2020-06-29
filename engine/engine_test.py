@@ -7,6 +7,8 @@ from engine import engine
 #   Lists?
 #   Design for less mocking?
 #   Test for Pluck errors (then implement)
+#   rename indoc to parse_map?
+#   spec mixin behavior
 
 class EngineTest(unittest.TestCase):
   def test_basic_flat(self):
@@ -136,6 +138,32 @@ class EngineTest(unittest.TestCase):
     actual, err = engine(doc, data)
     self.assertEqual(actual, None)
     self.assertEqual(err, 'Path not found: in:in_name.last')
+
+  # maybe? too early?
+  def _test_mixin_operation(self):
+    data = {
+      'location': {
+        'address': '11 street ave.'
+      },
+      'home_details': {
+        'has_windows': False
+      }
+    }
+    in_doc = {
+      'in_location': 'location',
+      'in_home_details': 'home_details'
+    }
+    out_doc ={'Home': '...in_location, ...in_homedetails'}
+    doc = {'in': in_doc, 'out': out_doc}
+    actual, err = engine(doc, data)
+    expected = {
+      'Home': {
+        'address': '11 street ave.',
+        'has_windows': False
+      }
+    }
+    self.assertEqual(actual, )
+    self.assertEqual(err, None)
 
   def test_path_error_in_doc(self):
     data = {'name': 'bob'}
