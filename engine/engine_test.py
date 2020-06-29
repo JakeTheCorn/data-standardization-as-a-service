@@ -118,8 +118,8 @@ class EngineTest(unittest.TestCase):
     data = {}
     in_doc = {'in_name': 'name'}
     tables = [
-      ({'Name': 'not_in_name'}, 'Path not found: in.not_in_name'),
-      ({'Name': 'not_in_name2'}, 'Path not found: in.not_in_name2')
+      ({'Name': 'not_in_name'}, 'Path not found: in:not_in_name'),
+      ({'Name': 'not_in_name2'}, 'Path not found: in:not_in_name2')
     ]
     for out_doc, expected in tables:
       doc = {'in': in_doc, 'out': out_doc}
@@ -127,7 +127,15 @@ class EngineTest(unittest.TestCase):
       self.assertEqual(actual, None)
       self.assertEqual(expected, err)
 
-
+  # test use case of using an in doc like this...
+  def test_nested_path_error_out_doc(self):
+    data = {}
+    in_doc = {'in_name': {'first': 'bo'}}
+    out_doc ={'Name': 'in_name.last'}
+    doc = {'in': in_doc, 'out': out_doc}
+    actual, err = engine(doc, data)
+    self.assertEqual(actual, None)
+    self.assertEqual(err, 'Path not found: in:in_name.last')
 
   def test_path_error_in_doc(self):
     data = {'name': 'bob'}

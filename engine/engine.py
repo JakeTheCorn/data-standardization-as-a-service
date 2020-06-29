@@ -40,7 +40,7 @@ def engine(doc, data):
     if isinstance(out_val, str):
       in_doc_has_path, err = dict_has_path(_in, out_val)
       if not in_doc_has_path:
-        return None, 'Path not found: in.%s' % out_val
+        return None, 'Path not found: in:%s' % out_val
       data_path = _in.get(out_val)
       if '.' not in data_path:
         has_path, _err = dict_has_path(data, data_path)
