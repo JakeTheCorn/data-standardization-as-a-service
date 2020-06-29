@@ -22,7 +22,7 @@ class EngineTest(unittest.TestCase):
           'in': in_doc,
           'out': out_doc
       }
-      actual = engine(doc=doc, data=data)
+      actual, err = engine(doc=doc, data=data)
       self.assertEqual(actual, expected)
 
   def test_nested_to_flat(self):
@@ -40,7 +40,7 @@ class EngineTest(unittest.TestCase):
       }
     }
 
-    actual = engine(doc=doc, data=data)
+    actual, err = engine(doc=doc, data=data)
     expected = {'Name': 'Frank'}
     self.assertEqual(actual, expected)
 
@@ -62,7 +62,7 @@ class EngineTest(unittest.TestCase):
       }
     }
 
-    actual = engine(doc=doc, data=data)
+    actual, err = engine(doc=doc, data=data)
     expected = {'user': {'first': 'bob', 'last': 'bobson'}}
     self.assertEqual(expected, actual)
 
@@ -86,7 +86,7 @@ class EngineTest(unittest.TestCase):
           }
       }
 
-      actual = engine(doc=doc, data=data)
+      actual, err = engine(doc=doc, data=data)
       expected = {'user': {'name': {'first': 'bob', 'last': 'bobson'}}}
       self.assertEqual(actual, expected)
 

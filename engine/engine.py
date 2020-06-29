@@ -30,15 +30,17 @@ def engine(doc, data):
       for sub_key in out_val:
         if isinstance(out_val[sub_key], dict):
           collector[out_key] = {}
-          collector[out_key][sub_key] = engine({
+          val, err = engine({
               'in': in_doc,
               'out': out_val[sub_key]
           }, data)
+          # todo: test for err
+          collector[out_key][sub_key] = val
           continue
 
         path = out_key + '.' + sub_key
-        _in_key = out_val[sub_key]
-        data_path = in_doc.get(_in_key)
+        in_key = out_val[sub_key]
+        data_path = in_doc.get(in_key)
         val, err = pluck(data, data_path)
         if err:
           return None, 'Path not found in data'
@@ -55,4 +57,4 @@ def engine(doc, data):
         return None, 'Path not found in data: %s' % data_path
       collector[out_key] = val
 
-  return collector
+  return collector, None
